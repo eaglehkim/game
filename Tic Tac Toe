@@ -1,0 +1,125 @@
+#include <iostream>
+
+using namespace std;
+
+void boardshow(char*);
+void change1(int, char*);
+void change2(int, char*);
+
+bool p1_win = false;
+bool p2_win = false;
+
+int main()
+{
+	char board[9] = { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+	bool checkwin = false;
+	int check = 0;
+
+	while (!checkwin)
+	{
+		boardshow(board);
+		cout << "Player 1, enter a number: ";
+		cin >> check;
+		change1(check, board);
+
+		if (p1_win == true || p2_win == true)
+			break;
+
+		boardshow(board);
+		cout << "Player 2, enter a number: ";
+		cin >> check;
+		change2(check, board);
+
+		if (p1_win == true || p2_win == true)
+			break;
+	}
+	if (p1_win == true)
+		cout << "Player 1 win!!";
+	if (p2_win == true)
+		cout << "Player 2 win!!";
+
+	return 0;
+}
+
+void boardshow(char* b)
+{
+	system("cls");
+	cout << endl;
+	cout << "        Tic Tac Toe" << endl;
+	cout << "Player 1 <X>  -  Player 2 <O>" << endl;
+	cout << "       " << b[0] << " | " << b[1] << " | " << b[2] << endl;
+	cout << "      -----------" << endl;
+	cout << "       " << b[3] << " | " << b[4] << " | " << b[5] << endl;
+	cout << "      -----------" << endl;
+	cout << "       " << b[6] << " | " << b[7] << " | " << b[8] << endl;
+}
+
+void change1(int n, char* b)
+{
+	if (n == 1)
+		b[0] = 'X';
+	else if (n == 2)
+		b[1] = 'X';
+	else if (n == 3)
+		b[2] = 'X';
+	else if (n == 4)
+		b[3] = 'X';
+	else if (n == 5)
+		b[4] = 'X';
+	else if (n == 6)
+		b[5] = 'X';
+	else if (n == 7)
+		b[6] = 'X';
+	else if (n == 8)
+		b[7] = 'X';
+	else if (n == 9)
+		b[8] = 'X';
+
+	if (b[0] == b[1] && b[1] == b[2])
+		p1_win = true;
+	else if (b[3] == b[4] && b[4] == b[5])
+		p1_win = true;
+	else if (b[6] == b[7] && b[7] == b[8])
+		p1_win = true;
+	else if (b[0] == b[3] && b[3] == b[6])
+		p1_win = true;
+	else if (b[1] == b[4] && b[4] == b[7])
+		p1_win = true;
+	else if (b[2] == b[5] && b[5] == b[8])
+		p1_win = true;
+}
+
+void change2(int n, char* b)
+{
+	if (n == 1)
+		b[0] = 'O';
+	else if (n == 2)
+		b[1] = 'O';
+	else if (n == 3)
+		b[2] = 'O';
+	else if (n == 4)
+		b[3] = 'O';
+	else if (n == 5)
+		b[4] = 'O';
+	else if (n == 6)
+		b[5] = 'O';
+	else if (n == 7)
+		b[6] = 'O';
+	else if (n == 8)
+		b[7] = 'O';
+	else if (n == 9)
+		b[8] = 'O';
+
+	if (b[0] == b[1] && b[1] == b[2])
+		p2_win = true;
+	else if (b[3] == b[4] && b[4] == b[5])
+		p2_win = true;
+	else if (b[6] == b[7] && b[7] == b[8])
+		p2_win = true;
+	else if (b[0] == b[3] && b[3] == b[6])
+		p2_win = true;
+	else if (b[1] == b[4] && b[4] == b[7])
+		p2_win = true;
+	else if (b[2] == b[5] && b[5] == b[8])
+		p2_win = true;
+}
