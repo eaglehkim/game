@@ -1,0 +1,116 @@
+#include <iostream>
+#include <ctime>
+#include <conio.h>
+
+#define LINE 5
+
+int main()
+{
+	srand((unsigned int)time(0));
+
+	int iNum[25] = { };
+
+	for (int i = 0; i < 24; ++i)
+	{
+		iNum[i] = i + 1;
+	}
+
+	iNum[24] = INT_MAX;
+
+	int iStarIndex = 24;
+
+	int iTmp, idx1, idx2;
+
+	for (int i = 0; i < 100; ++i)
+	{
+		idx1 = rand() % 24;
+		idx2 = rand() % 24;
+
+		iTmp = iNum[idx1];
+		iNum[idx1] = iNum[idx2];
+		iNum[idx2] = iTmp;
+	}
+
+	while (true)
+	{
+		system("cls");
+		for (int i = 0; i < LINE; i++)
+		{
+			for (int j = 0; j < LINE; ++j)
+			{
+				if (iNum[(i * LINE) + j] == INT_MAX)
+					std::cout << '*' << '\t';
+				else
+					std::cout << iNum[(i * LINE) + j] << '\t';
+			}
+			std::cout << std::endl;
+		}
+
+		bool bWin = true;
+
+		for (int i = 0; i < 24; ++i)
+		{
+			if (iNum[i] != i + 1)
+			{
+				bWin = false;
+				break;
+			}
+		}
+
+		if (bWin == true)
+		{
+			std::cout << "CLEAR" << std::endl;
+			break;
+		}
+
+		std::cout << std::endl;
+		std::cout << "w : UP, s : DOWN, a : LEFT, d : RIGHT, q : EXT" << std::endl;
+		char cInput = _getch();
+
+		if (tolower(cInput) == 'q')
+			break;
+
+		switch (tolower(cInput))
+		{
+		case 'w':
+			if (iStarIndex > 4)
+			{
+				iNum[iStarIndex] = iNum[iStarIndex - LINE];
+				iNum[iStarIndex - LINE] = INT_MAX;
+				iStarIndex -= LINE;
+			}
+			break;
+		case 's':
+			if (iStarIndex < 20)
+			{
+				iNum[iStarIndex] = iNum[iStarIndex + LINE];
+				iNum[iStarIndex + LINE] = INT_MAX;
+				iStarIndex += LINE;
+			}
+			break;
+		case 'a':
+			if (iStarIndex % 5 != 0)
+			{
+				iNum[iStarIndex] = iNum[iStarIndex - 1];
+				iNum[iStarIndex - 1] = INT_MAX;
+				iStarIndex -= 1;
+			}
+			break;
+		case 'd':
+			if (iStarIndex % 5 != 4)
+			{
+				iNum[iStarIndex] = iNum[iStarIndex + 1];
+				iNum[iStarIndex + 1] = INT_MAX;
+				iStarIndex += 1;
+			}
+			break;
+		default :
+			break;
+
+		}
+	}
+
+	std::cout << "GAME OVER" << std::endl;
+
+	return 0;
+}
