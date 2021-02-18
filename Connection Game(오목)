@@ -128,9 +128,17 @@ int main()
 	}
 
 	if (win == 0)
-		std::cout << "\tPLAYER 1 WIN!!";
+	{
+		std::cout << "\t====================" << std::endl;
+		std::cout << "\t|| PLAYER 1 WIN!! ||" << std::endl;
+		std::cout << "\t====================";
+	}
 	if (win == 1)
-		std::cout << "\tPLAYER 2 WIN!!";
+	{
+		std::cout << "\t====================" << std::endl;
+		std::cout << "\t|| PLAYER 2 WIN!! ||" << std::endl;
+		std::cout << "\t====================";
+	}
 
 	return 0;
 }
