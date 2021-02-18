@@ -1,0 +1,178 @@
+#include <iostream>
+#include <conio.h>
+
+struct _tagPoint
+{
+	int x;
+	int y;
+};
+
+typedef _tagPoint POINT;
+typedef _tagPoint* PPOINT;
+
+// 0 : wall, 1 : road, 2 : start pos, 3 : finish pos 
+void SetMaze(char Maze[21][21], PPOINT pPlayerPos, PPOINT pStartPos, PPOINT pEndPos);
+void Output(char Maze[21][21], PPOINT pPlayerPos);
+void MovePlayer(char Maze[21][21], PPOINT pPlayerPos, char cInput);
+
+void MoveUp(char Maze[21][21], PPOINT pPlayerPos);
+void MoveDown(char Maze[21][21], PPOINT pPlayerPos);
+void MoveRight(char Maze[21][21], PPOINT pPlayerPos);
+void MoveLeft(char Maze[21][21], PPOINT pPlayerPos);
+
+int main()
+{
+	char strMaze[21][21] = {};
+
+	POINT tPlayerPos;
+	POINT tStartPos;
+	POINT tEndPos;
+
+	SetMaze(strMaze, &tPlayerPos, &tStartPos, &tEndPos);
+
+	while (true)
+	{
+		system("cls");
+
+		Output(strMaze, &tPlayerPos);
+
+		if (tPlayerPos.x == tEndPos.x && tPlayerPos.y == tEndPos.y)
+		{
+			std::cout << "FINISHED!!" << std::endl;
+			break;
+		}
+
+		std::cout << "w : UP, s : DOWN, a : LEFT, d : RIGHT, q : EXIT";
+
+		char cInput = _getch();
+
+		if (tolower(cInput) == 'q')
+			break;
+
+		MovePlayer(strMaze, &tPlayerPos, cInput);
+	}
+
+	return 0;
+}
+
+void SetMaze(char Maze[21][21], PPOINT pPlayerPos, PPOINT pStartPos, PPOINT pEndPos)
+{
+	pStartPos->x = 0;
+	pStartPos->y = 0;
+
+	pEndPos->x = 19;
+	pEndPos->y = 14;
+
+	pPlayerPos->x = 0;
+	pPlayerPos->y = 0;
+
+	strcpy_s(Maze[0], "21100000000000011100");
+	strcpy_s(Maze[1], "00111111111100010000");
+	strcpy_s(Maze[2], "01100100000111111111");
+	strcpy_s(Maze[3], "01000100000000000100");
+	strcpy_s(Maze[4], "11000111110001111100");
+	strcpy_s(Maze[5], "10011100011111000000");
+	strcpy_s(Maze[6], "10010000010001111000");
+	strcpy_s(Maze[7], "10010000010000000000");
+	strcpy_s(Maze[8], "11100000011111111110");
+	strcpy_s(Maze[9], "00100000000000010000");
+	strcpy_s(Maze[10], "00100000000111111100");
+	strcpy_s(Maze[11], "00111111111100000100");
+	strcpy_s(Maze[12], "00100100000000000100");
+	strcpy_s(Maze[13], "01100100000000000100");
+	strcpy_s(Maze[14], "01000111110001111113");
+	strcpy_s(Maze[15], "01111100011111000000");
+	strcpy_s(Maze[16], "00100000010001111100");
+	strcpy_s(Maze[17], "00100000010000000100");
+	strcpy_s(Maze[18], "00100000011111111000");
+	strcpy_s(Maze[19], "00111111110000001111");
+}
+
+void Output(char Maze[21][21], PPOINT pPlayerPos)
+{
+	for (int i = 0; i < 21; ++i)
+	{
+		for (int j = 0; j < 21; ++j)
+		{
+			if (pPlayerPos->x == j && pPlayerPos->y == i)
+				std::cout << "☆";
+
+			else if (Maze[i][j] == '0')
+				std::cout << "■";
+			else if (Maze[i][j] == '1')
+				std::cout << "  ";
+			else if (Maze[i][j] == '2')
+				std::cout << "★";
+			else if (Maze[i][j] == '3')
+				std::cout << "◎";
+		}
+		std::cout << std::endl;
+	}
+}
+
+void MovePlayer(char Maze[21][21], PPOINT pPlayerPos, char cInput)
+{
+	switch (tolower(cInput))
+	{
+	case 'w':
+		MoveUp(Maze, pPlayerPos);
+		break;
+	case 's':
+		MoveDown(Maze, pPlayerPos);
+		break;
+	case 'a':
+		MoveLeft(Maze, pPlayerPos);
+		break;
+	case 'd':
+		MoveRight(Maze, pPlayerPos);
+		break;
+	}
+}
+
+void MoveUp(char Maze[21][21], PPOINT pPlayerPos)
+{
+	if (pPlayerPos->y - 1 >= 0)
+	{
+		// wall check
+		if (Maze[pPlayerPos->y - 1][pPlayerPos->x] != '0')
+		{
+			--pPlayerPos->y;
+		}
+	}
+}
+
+void MoveDown(char Maze[21][21], PPOINT pPlayerPos)
+{
+	if (pPlayerPos->y + 1 < 20)
+	{
+		// wall check
+		if (Maze[pPlayerPos->y + 1][pPlayerPos->x] != '0')
+		{
+			++pPlayerPos->y;
+		}
+	}
+}
+
+void MoveRight(char Maze[21][21], PPOINT pPlayerPos)
+{
+	if (pPlayerPos->x + 1 < 20)
+	{
+		// wall check
+		if (Maze[pPlayerPos->y][pPlayerPos->x + 1] != '0')
+		{
+			++pPlayerPos->x;
+		}
+	}
+}
+
+void MoveLeft(char Maze[21][21], PPOINT pPlayerPos)
+{
+	if (pPlayerPos->x - 1 >= 0)
+	{
+		// wall check
+		if (Maze[pPlayerPos->y][pPlayerPos->x - 1] != '0')
+		{
+			--pPlayerPos->x;
+		}
+	}
+}
