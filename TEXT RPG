@@ -2,301 +2,318 @@
 
 #define NAME_SIZE 30
 
-struct sPlayer
+class Player
 {
-	char strName[NAME_SIZE] = {};
-	char strClassName[NAME_SIZE] = {};
-	int iHP = 100;
-	int iMP = 40;
-	int iExp = 0;
-	int iGold = 100;
-	int iDamage = 10;
-	int iArmour = 2;
+private:
+	char strPlayerName[NAME_SIZE];
+	int nHP;
+	int nDamage;
+	int nGold;
+	
+public:
+	Player(char* pName, int HP, int Damage, int Gold)
+		: nHP(HP), nDamage(Damage), nGold(Gold)
+	{
+		strcpy_s(strPlayerName, pName);
+	}
+
+	void setHP(int HP) { nHP += HP; }
+	void setDamage(int Damage) { nDamage += Damage; }
+	void setGold(int Gold) { nGold += Gold;  }
+	void setStoreGold(int Gold) { nGold -= Gold; }
+	void setBattleHP(int HP) { nHP = HP; }
+	char* getName() { return strPlayerName; }
+	int getHP() { return nHP; }
+	int getDamage() { return nDamage; }
+	int getGold() { return nGold; }
+
+	void showPlayer()
+	{
+		std::cout << "\tNAME : " << strPlayerName << std::endl;
+		std::cout << "\tHP : " << nHP << std::endl;
+		std::cout << "\tDAMAGE : " << nDamage << std::endl;
+		std::cout << "\tGOLD : " << nGold << std::endl;
+	}
 };
 
-struct sMonster
+class Monster
 {
-	char strName[NAME_SIZE] = {};
-	int iHP;
-	int iMP;
-	int iExp;
-	int iGold;
-	int iDamage;
-	int iArmour;
+private:
+	char strMonsterName[NAME_SIZE];
+	int nHP;
+	int nDamage;
+	int nGold;
+
+public:
+	Monster(char* pName, int HP, int Damage, int Gold)
+		: nHP(HP), nDamage(Damage), nGold(Gold)
+	{
+		strcpy_s(strMonsterName, pName);
+	}
+
+	void setHP(int HP) { nHP += HP; }
+	void setBattleHP(int HP) { nHP = HP; }
+	char* getName() { return strMonsterName; }
+	int getHP() { return nHP; }
+	int getDamage() { return nDamage; }
+	int getGold() { return nGold; }
+
+	void showMonster()
+	{
+		std::cout << "\tNAME : " << strMonsterName << std::endl;
+		std::cout << "\tHP : " << nHP << std::endl;
+		std::cout << "\tDAMAGE : " << nDamage << std::endl;
+		std::cout << "\tGOLD : " << nGold << std::endl;
+	}
 };
 
-void showPlayer(sPlayer& Player);
-void showMonster(sMonster& Monster);
-
-void playerAttack(sPlayer& Player, sMonster& Monster);
-void monsterAttack(sMonster& Monster, sPlayer& Player);
+void intro()
+{
+	std::cout << "==========================" << std::endl;
+	std::cout << "||\tTEXT RPG\t||" << std::endl;
+	std::cout << "==========================" << std::endl;
+}
 
 int main()
 {
-	sPlayer p;
-	sMonster m[3] = {};
+	char strName[NAME_SIZE];
+	intro();
+	std::cout << "\tPLAYER NAME : ";
+	std::cin >> strName;
 
-	int iMenu;
-	char str[NAME_SIZE];
-	int iTmpPlayerHP = p.iHP;
+	Player p(strName, 100, 5, 100);
 
-	std::cout << "\tNAME : ";
-	std::cin >> str;
-	strcpy_s(p.strName, str);
+	strcpy_s(strName, "GOBLIN");
+	Monster m0(strName, 50, 2, 2);
 
-	std::cout << "\tCLASS : ";
-	std::cin >> str;
-	strcpy_s(p.strClassName, str);
+	strcpy_s(strName, "TROLL");
+	Monster m1(strName, 500, 20, 20);
 
-	strcpy_s(m[0].strName, "GOBLIN");
-	m[0].iHP = 50;
-	m[0].iMP = 0;
-	m[0].iExp = 5;
-	m[0].iGold = 2;
-	m[0].iDamage = 2;
-	m[0].iArmour = 0;
-
-	strcpy_s(m[1].strName, "TROLL");
-	m[1].iHP = 500;
-	m[1].iMP = 10;
-	m[1].iExp = 30;
-	m[1].iGold = 10;
-	m[1].iDamage = 20;
-	m[1].iArmour = 5;
-
-	strcpy_s(m[2].strName, "DRAGON");
-	m[2].iHP = 5000;
-	m[2].iMP = 200;
-	m[2].iExp = 80;
-	m[2].iGold = 150;
-	m[2].iDamage = 50;
-	m[2].iArmour = 10;	
+	strcpy_s(strName, "DRAGON");
+	Monster m2(strName, 5000, 90, 200);
 
 	while (true)
 	{
+		int nMenu;
+
 		system("cls");
+		intro();
 
-		std::cout << "\t01.PLAY" << std::endl;
-		std::cout << "\t02.EXIT" << std::endl;
-		std::cout << "SELECT : ";
-		std::cin >> iMenu;
+		std::cout << "\t01.EASY(GOBLIN)" << std::endl;
+		std::cout << "\t02.NORMAL(TROLL)" << std::endl;
+		std::cout << "\t03.HARD(DRAGON)" << std::endl;
+		std::cout << "\t04.TRAIN" << std::endl;
+		std::cout << "\t05.EXIT" << std::endl;
+		std::cout << "\tSELECT : ";
+		std::cin >> nMenu;
 
-		if (iMenu == 2)
+		if (nMenu == 5)
+			break;		
+
+		switch (nMenu)
+		{
+		case 1:
+		{
+			int tmpPlayerHP = p.getHP();
+			int tmpMonsterHP = m0.getHP();
+
+			int PlayerHP;
+			int MonsterHP;
+
+			while (true)
+			{
+				system("cls");
+				intro();
+
+				if (p.getHP() <= 0)
+					break;
+				if (m0.getHP() <= 0)
+				{
+					p.setGold(m0.getGold());
+					break;
+				}
+
+				std::cout << "----------- PLAYER ----------" << std::endl;
+				p.showPlayer();
+
+				std::cout << "----------- MONSTER ----------" << std::endl;
+				m0.showMonster();
+
+				std::cout << "\t01.FIGHT" << std::endl;
+				std::cout << "\t02.BACK" << std::endl;
+				std::cout << "\tSELECT : ";
+				std::cin >> nMenu;
+
+				if (nMenu == 2)
+					break;
+
+				if (nMenu == 1)
+				{
+					PlayerHP = p.getHP() - m0.getDamage();
+					p.setBattleHP(PlayerHP);
+					MonsterHP = m0.getHP() - p.getDamage();
+					m0.setBattleHP(MonsterHP);
+					std::cout << p.getName() << " recieved " << m0.getDamage() << " from " << m0.getName() << std::endl;
+					std::cout << m0.getName() << " recieved " << p.getDamage() << " from " << p.getName() << std::endl;
+				}
+
+				system("pause");
+			}
+
+			p.setBattleHP(tmpPlayerHP);
+			m0.setBattleHP(tmpMonsterHP);
+		}
 			break;
-		
-		if (iMenu == 1)
+		case 2:
+		{
+			int tmpPlayerHP = p.getHP();
+			int tmpMonsterHP = m1.getHP();
+
+			int PlayerHP;
+			int MonsterHP;
+
+			while (true)
+			{
+				system("cls");
+				intro();
+
+				if (p.getHP() <= 0)
+					break;
+				if (m1.getHP() <= 0)
+				{
+					p.setGold(m1.getGold());
+					break;
+				}
+
+				std::cout << "----------- PLAYER ----------" << std::endl;
+				p.showPlayer();
+
+				std::cout << "----------- MONSTER ----------" << std::endl;
+				m1.showMonster();
+
+				std::cout << "\t01.FIGHT" << std::endl;
+				std::cout << "\t02.BACK" << std::endl;
+				std::cout << "\tSELECT : ";
+				std::cin >> nMenu;
+
+				if (nMenu == 2)
+					break;
+
+				if (nMenu == 1)
+				{
+					PlayerHP = p.getHP() - m1.getDamage();
+					p.setBattleHP(PlayerHP);
+					MonsterHP = m1.getHP() - p.getDamage();
+					m1.setBattleHP(MonsterHP);
+					std::cout << p.getName() << " recieved " << m1.getDamage() << " from " << m1.getName() << std::endl;
+					std::cout << m1.getName() << " recieved " << p.getDamage() << " from " << p.getName() << std::endl;
+				}
+
+				system("pause");
+			}
+
+			p.setBattleHP(tmpPlayerHP);
+			m1.setBattleHP(tmpMonsterHP);
+		}
+			break;
+		case 3:
+		{
+			int tmpPlayerHP = p.getHP();
+			int tmpMonsterHP = m2.getHP();
+
+			int PlayerHP;
+			int MonsterHP;
+
+			while (true)
+			{
+				system("cls");
+				intro();
+
+				if (p.getHP() <= 0)
+					break;
+				if (m2.getHP() <= 0)
+				{
+					p.setGold(m2.getGold());
+					break;
+				}
+
+				std::cout << "----------- PLAYER ----------" << std::endl;
+				p.showPlayer();
+
+				std::cout << "----------- MONSTER ----------" << std::endl;
+				m2.showMonster();
+
+				std::cout << "\t01.FIGHT" << std::endl;
+				std::cout << "\t02.BACK" << std::endl;
+				std::cout << "\tSELECT : ";
+				std::cin >> nMenu;
+
+				if (nMenu == 2)
+					break;
+
+				if (nMenu == 1)
+				{
+					PlayerHP = p.getHP() - m2.getDamage();
+					p.setBattleHP(PlayerHP);
+					MonsterHP = m2.getHP() - p.getDamage();
+					m2.setBattleHP(MonsterHP);
+					std::cout << p.getName() << " recieved " << m2.getDamage() << " from " << m2.getName() << std::endl;
+					std::cout << m2.getName() << " recieved " << p.getDamage() << " from " << p.getName() << std::endl;
+				}
+
+				system("pause");
+			}
+
+			p.setBattleHP(tmpPlayerHP);
+			m2.setBattleHP(tmpMonsterHP);
+		}
+			break;
+		case 4:
 		{
 			while (true)
 			{
-				system("cls");				
+				system("cls");
+				intro();
 
-				std::cout << "\t01.BATTLE" << std::endl;
-				std::cout << "\t02.TRAIN" << std::endl;
-				std::cout << "\t03.STATUS" << std::endl;
-				std::cout << "\t04.EXIT" << std::endl;
-				std::cout << "SELECT : ";
-				std::cin >> iMenu;
+				p.showPlayer();
 
-				if (iMenu == 4)
+				std::cout << "\t01.DAMAGE TRAINING(DAMAGE +10)(GOLD -100)" << std::endl;
+				std::cout << "\t02.HEALTH TRAINING(HP +20)(GOLD -150)" << std::endl;
+				std::cout << "\t03.EXIT" << std::endl;
+				std::cout << "\tSELECT : ";
+				std::cin >> nMenu;
+
+				if (nMenu == 3)
 					break;
 
-				switch (iMenu)
+				switch (nMenu)
 				{
 				case 1:
 				{
-					while (true)
+					if (p.getGold() < 100)
 					{
-						system("cls");
-
-						p.iHP = iTmpPlayerHP;
-
-						std::cout << "\t01.EASY(GOBLIN)" << std::endl;
-						std::cout << "\t02.NORMAL(TROLL)" << std::endl;
-						std::cout << "\t03.HARD(DRAGON)" << std::endl;
-						std::cout << "\t04.BACK" << std::endl;
-						std::cout << "SELECT : ";
-						std::cin >> iMenu;
-
-						if (iMenu == 4)
-							break;
-
-						switch (iMenu)
-						{
-						case 1:
-						{		
-							while (true)
-							{
-								system("cls");
-
-								if (p.iHP <= 0)
-									break;
-								if (m[0].iHP <= 0)
-								{
-									m[0].iHP = 50;
-									p.iExp += m[0].iExp;
-									p.iGold += m[0].iGold;
-									break;
-								}
-
-								std::cout << "\t01.ATTACK" << std::endl;
-								std::cout << "\t02.BACK" << std::endl;
-								std::cout << "SELECT : ";
-								std::cin >> iMenu;
-
-								if (iMenu == 2)
-									break;
-
-								if (iMenu == 1)
-								{
-									showPlayer(p);
-									showMonster(m[0]);
-
-									playerAttack(p, m[0]);
-									monsterAttack(m[0], p);
-								}
-
-								system("pause");
-							}
-						}
-							break;
-						case 2:
-						{
-							while (true)
-							{
-								system("cls");
-
-								if (p.iHP <= 0)
-									break;
-								if (m[1].iHP <= 0)
-								{
-									m[1].iHP = 500;
-									p.iExp += m[1].iExp;
-									p.iGold += m[1].iGold;
-									break;
-								}
-
-								std::cout << "\t01.ATTACK" << std::endl;
-								std::cout << "\t02.BACK" << std::endl;
-								std::cout << "SELECT : ";
-								std::cin >> iMenu;
-
-								if (iMenu == 2)
-									break;
-
-								if (iMenu == 1)
-								{
-									showPlayer(p);
-									showMonster(m[1]);
-
-									playerAttack(p, m[1]);
-									monsterAttack(m[1], p);
-								}
-
-								system("pause");
-							}
-						}
-							break;
-						case 3:
-						{
-							while (true)
-							{
-								system("cls");
-
-								if (p.iHP <= 0)
-									break;
-								if (m[2].iHP <= 0)
-								{
-									m[2].iHP = 5000;
-									p.iExp += m[2].iExp;
-									p.iGold += m[2].iGold;
-									break;
-								}
-
-								std::cout << "\t01.ATTACK" << std::endl;
-								std::cout << "\t02.BACK" << std::endl;
-								std::cout << "SELECT : ";
-								std::cin >> iMenu;
-
-								if (iMenu == 2)
-									break;
-
-								if (iMenu == 1)
-								{
-									showPlayer(p);
-									showMonster(m[2]);
-
-									playerAttack(p, m[2]);
-									monsterAttack(m[2], p);
-								}
-
-								system("pause");
-							}
-						}
-							break;
-						default:
-							std::cout << "\t-WRONG INPUT-" << std::endl;
-							break;
-						}
+						std::cout << "\t-NOT ENOUGH GOLD-" << std::endl;
+						break;
+					}
+					else
+					{
+						p.setStoreGold(100);
+						p.setDamage(10);
 					}
 				}
 					break;
 				case 2:
 				{
-					system("cls");
-
-					std::cout << "\t01.DAMAGE" << std::endl;
-					std::cout << "\t02.ARMOUR" << std::endl;
-					std::cout << "\t03.HEALTH" << std::endl;
-					std::cout << "\t04.BACK" << std::endl;
-					std::cout << "SELECT : ";
-					std::cin >> iMenu;
-
-					if (iMenu == 4)
-						break;
-					
-					switch (iMenu)
+					if (p.getGold() < 150)
 					{
-					case 1:
-						if (p.iGold <= 200)
-						{
-							p.iDamage += 10;
-							p.iGold -= 200;
-							showPlayer(p);
-						}
-						else
-							std::cout << "\tNOT ENOUGH GOLD" << std::endl;
+						std::cout << "\t-NOT ENOUGH GOLD-" << std::endl;
 						break;
-					case 2:
-						if (p.iGold <= 150)
-						{
-							p.iArmour += 2;
-							p.iGold -= 150;
-							showPlayer(p);
-						}
-						else
-							std::cout << "\tNOT ENOUGH GOLD" << std::endl;
-						break;
-					case 3:
-						if (p.iGold <= 100)
-						{
-							p.iHP += 15;
-							iTmpPlayerHP += 15;;
-							p.iGold -= 100;
-							showPlayer(p);
-						}
-						else
-							std::cout << "\tNOT ENOUGH GOLD" << std::endl;
-						break;
-					default:
-						std::cout << "\t-WRONG INPUT-" << std::endl;
-						break;
-					}					
-				}
-					break;
-				case 3:
-				{
-					showPlayer(p);
-					system("pause");
+					}
+					else
+					{
+						p.setStoreGold(150);
+						p.setHP(20);
+					}
 				}
 					break;
 				default:
@@ -305,42 +322,12 @@ int main()
 				}
 			}
 		}
+			break;
+		default:
+			std::cout << "\t-WRONG INPUT-" << std::endl;
+			break;
+		}
 	}
 
 	return 0;
-}
-
-void showPlayer(sPlayer& p)
-{
-	std::cout << "\tNAME : " << p.strName << std::endl;
-	std::cout << "\tCLASS : " << p.strClassName << std::endl;
-	std::cout << "\tHP : " << p.iHP << std::endl;
-	std::cout << "\tMP : " << p.iMP << std::endl;
-	std::cout << "\tEXP :" << p.iExp << std::endl;
-	std::cout << "\tGOLD : " << p.iGold << std::endl;
-	std::cout << "\tDAMAGE : " << p.iDamage << std::endl;
-	std::cout << "\tARMOUR : " << p.iArmour << std::endl;
-}
-
-void showMonster(sMonster& m)
-{
-	std::cout << "\tNAME : " << m.strName << std::endl;
-	std::cout << "\tHP : " << m.iHP << std::endl;
-	std::cout << "\tMP : " << m.iMP << std::endl;
-	std::cout << "\tEXP :" << m.iExp << std::endl;
-	std::cout << "\tGOLD : " << m.iGold << std::endl;
-	std::cout << "\tDAMAGE : " << m.iDamage << std::endl;
-	std::cout << "\tARMOUR : " << m.iArmour << std::endl;
-}
-
-void playerAttack(sPlayer& p, sMonster& m)
-{
-	m.iHP -= p.iDamage - m.iArmour;
-	std::cout << p.strName << " attacked " << m.strName << std::endl;
-}
-
-void monsterAttack(sMonster& m, sPlayer& p)
-{
-	p.iHP -= m.iDamage - p.iArmour;
-	std::cout << m.strName << " attacked " << p.strName << std::endl;
 }
