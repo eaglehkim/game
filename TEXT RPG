@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 
 #define NAME_SIZE 30
 
@@ -35,14 +36,14 @@ public:
 	void setHP(int HP) { nHP = HP; }
 	void setGold(int Gold) { nGold = Gold; }
 	void setBattleGold(int Gold) { nGold += Gold; }
-	void setStoreDamage(int HP) { nHP += HP; }
+	void setStoreDamage(int Damage) { nDamage += Damage; }
 	void setStoreHP(int HP) { nHP += HP; }
 	void setStoreGold(int Gold) { nGold -= Gold; }
 	char* getName() { return strPlayerName; }
 	int getSaveNum() const { return nSaveNum; }
 	int getDamage() const { return nDamage; }
 	int getHP() const { return nHP; }
-	int getGold() const { return nGold; }	
+	int getGold() const { return nGold; }
 	void addCharacter()
 	{
 		std::cout << "NAME : ";
@@ -56,7 +57,12 @@ public:
 	}
 	void showPlayer() const
 	{
-		std::cout << strPlayerName << " / " << nSaveNum << " / " << nDamage << " / " << nHP << " / " << nGold << std::endl;
+		std::cout << "----------- PLAYER ----------" << std::endl;
+		std::cout << std::setw(10) << strPlayerName << " / " <<
+			std::setw(10) << nDamage << " / " << 
+			std::setw(10) << nHP << " / " << 
+			std::setw(10) << nGold << " / " <<
+			"SAVE NUM : " << std::setw(10) << nSaveNum << std::endl;
 	}
 };
 
@@ -80,7 +86,11 @@ public:
 	int getGold() const { return nGold; }
 	void showMonster() const
 	{
-		std::cout << strMonsterName << " / " << nDamage << " / " << nHP << " / " << nGold << std::endl;
+		std::cout << "----------- MONSTER ----------" << std::endl;
+		std::cout << std::setw(10) << strMonsterName << " / " <<
+			std::setw(10) << nDamage << " / " <<
+			std::setw(10) << nHP << " / " <<
+			std::setw(10) << nGold << std::endl;
 	}
 };
 
@@ -95,7 +105,7 @@ void newCharacter(Player& player)
 
 Player selectCharacter(int n)
 {
-	Player player, tmp;
+	Player player;
 	std::ifstream inFile;
 	inFile.open("Save.dat", std::ios::binary);
 	if (!inFile)
@@ -107,17 +117,14 @@ Player selectCharacter(int n)
 	{
 		if (player.getSaveNum() == n)
 		{
-			tmp.setName(player.getName());
-			tmp.setSaveNum(player.getSaveNum());
-			tmp.setHP(player.getHP());
-			tmp.setDamage(player.getDamage());
-			tmp.setGold(player.getGold());
+			Player tmp(player);
+			return tmp;
 		}
 	}
 	inFile.close();
 	std::cout << "Selection Complete" << std::endl;
 
-	return tmp;
+	return player;
 }
 
 void showAll()
@@ -194,6 +201,16 @@ void delete_character(int n)
 	std::cout << "Record Deleted" << std::endl;
 }
 
+void Battle(int PlayerHP, int MonsterHP, Player& p, Monster& m)
+{
+	PlayerHP = p.getHP() - m.getDamage();
+	p.setHP(PlayerHP);
+	MonsterHP = m.getHP() - p.getDamage();
+	m.setHP(MonsterHP);
+	std::cout << p.getName() << " recieved " << m.getDamage() << " from " << m.getName() << std::endl;
+	std::cout << m.getName() << " recieved " << p.getDamage() << " from " << p.getName() << std::endl;
+}
+
 int main()
 {
 	char strName[NAME_SIZE];
@@ -201,7 +218,7 @@ int main()
 	Player p;
 
 	strcpy_s(strName, "GOBLIN");
-	Monster m0(strName, 2, 50, 10);
+	Monster m0(strName, 2, 50, 1000);
 
 	strcpy_s(strName, "TROLL");
 	Monster m1(strName, 20, 700, 100);
@@ -231,7 +248,7 @@ int main()
 		{
 			newCharacter(p);
 		}
-			break;
+		break;
 		case 2:
 		{
 			showAll();
@@ -245,7 +262,7 @@ int main()
 			p.setHP(tmp.getHP());
 			p.setGold(tmp.getGold());
 		}
-			break;
+		break;
 		case 3:
 		{
 			while (true)
@@ -271,8 +288,8 @@ int main()
 					int tmpPlayerHP = p.getHP();
 					int tmpMonsterHP = m0.getHP();
 
-					int PlayerHP;
-					int MonsterHP;
+					int PlayerHP = p.getHP();
+					int MonsterHP = m0.getHP();
 
 					while (true)
 					{
@@ -286,10 +303,7 @@ int main()
 							break;
 						}
 
-						std::cout << "----------- PLAYER ----------" << std::endl;
 						p.showPlayer();
-
-						std::cout << "----------- MONSTER ----------" << std::endl;
 						m0.showMonster();
 
 						std::cout << "\t01.FIGHT" << std::endl;
@@ -302,12 +316,7 @@ int main()
 
 						if (nMenu == 1)
 						{
-							PlayerHP = p.getHP() - m0.getDamage();
-							p.setHP(PlayerHP);
-							MonsterHP = m0.getHP() - p.getDamage();
-							m0.setHP(MonsterHP);
-							std::cout << p.getName() << " recieved " << m0.getDamage() << " from " << m0.getName() << std::endl;
-							std::cout << m0.getName() << " recieved " << p.getDamage() << " from " << p.getName() << std::endl;
+							Battle(PlayerHP, MonsterHP, p, m0);
 						}
 
 						system("pause");
@@ -322,8 +331,8 @@ int main()
 					int tmpPlayerHP = p.getHP();
 					int tmpMonsterHP = m1.getHP();
 
-					int PlayerHP;
-					int MonsterHP;
+					int PlayerHP = p.getHP();
+					int MonsterHP = m1.getHP();
 
 					while (true)
 					{
@@ -337,10 +346,7 @@ int main()
 							break;
 						}
 
-						std::cout << "----------- PLAYER ----------" << std::endl;
 						p.showPlayer();
-
-						std::cout << "----------- MONSTER ----------" << std::endl;
 						m1.showMonster();
 
 						std::cout << "\t01.FIGHT" << std::endl;
@@ -353,12 +359,7 @@ int main()
 
 						if (nMenu == 1)
 						{
-							PlayerHP = p.getHP() - m1.getDamage();
-							p.setHP(PlayerHP);
-							MonsterHP = m1.getHP() - p.getDamage();
-							m1.setHP(MonsterHP);
-							std::cout << p.getName() << " recieved " << m1.getDamage() << " from " << m1.getName() << std::endl;
-							std::cout << m1.getName() << " recieved " << p.getDamage() << " from " << p.getName() << std::endl;
+							Battle(PlayerHP, MonsterHP, p, m1);
 						}
 
 						system("pause");
@@ -373,8 +374,8 @@ int main()
 					int tmpPlayerHP = p.getHP();
 					int tmpMonsterHP = m2.getHP();
 
-					int PlayerHP;
-					int MonsterHP;
+					int PlayerHP = p.getHP();
+					int MonsterHP = m2.getHP();
 
 					while (true)
 					{
@@ -388,10 +389,7 @@ int main()
 							break;
 						}
 
-						std::cout << "----------- PLAYER ----------" << std::endl;
 						p.showPlayer();
-
-						std::cout << "----------- MONSTER ----------" << std::endl;
 						m2.showMonster();
 
 						std::cout << "\t01.FIGHT" << std::endl;
@@ -404,12 +402,7 @@ int main()
 
 						if (nMenu == 1)
 						{
-							PlayerHP = p.getHP() - m2.getDamage();
-							p.setHP(PlayerHP);
-							MonsterHP = m2.getHP() - p.getDamage();
-							m2.setHP(MonsterHP);
-							std::cout << p.getName() << " recieved " << m2.getDamage() << " from " << m2.getName() << std::endl;
-							std::cout << m2.getName() << " recieved " << p.getDamage() << " from " << p.getName() << std::endl;
+							Battle(PlayerHP, MonsterHP, p, m2);
 						}
 
 						system("pause");
@@ -427,8 +420,8 @@ int main()
 
 						p.showPlayer();
 
-						std::cout << "\t01.DAMAGE TRAINING(DAMAGE +10)(GOLD -100)" << std::endl;
-						std::cout << "\t02.HEALTH TRAINING(HP +20)(GOLD -150)" << std::endl;
+						std::cout << "\t01.DAMAGE UP(DAMAGE +10)(GOLD -100)" << std::endl;
+						std::cout << "\t02.HEALTH UP(HP +20)(GOLD -150)" << std::endl;
 						std::cout << "\t03.EXIT" << std::endl;
 						std::cout << "\tSELECT : ";
 						std::cin >> nMenu;
@@ -448,7 +441,7 @@ int main()
 							else
 							{
 								p.setStoreGold(100);
-								p.setDamage(10);
+								p.setStoreDamage(10);
 							}
 						}
 						break;
@@ -462,7 +455,7 @@ int main()
 							else
 							{
 								p.setStoreGold(150);
-								p.setHP(20);
+								p.setStoreHP(20);
 							}
 						}
 						break;
@@ -480,7 +473,7 @@ int main()
 					std::cin >> nMenu;
 					saveCharacter(p, nMenu);
 				}
-					break;
+				break;
 				default:
 					std::cout << "\t-WRONG INPUT-" << std::endl;
 					break;
@@ -497,7 +490,7 @@ int main()
 			delete_character(nMenu);
 		}
 
-			break;
+		break;
 		default:
 			std::cout << "-WRONG INPUT-" << std::endl;
 			break;
